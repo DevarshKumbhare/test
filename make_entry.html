@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Submission</title>
+</head>
+<body>
+  <h2>Submit Form</h2>
+  <form id="myForm" onsubmit="submitForm(event)">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required><br><br>
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="errorMessage" style="color: red; display: none;"></div>
+
+  <script>
+    function submitForm(event) {
+      event.preventDefault(); // Prevent the form from submitting normally
+
+      // Get form data
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+      var dob = document.getElementById('dob').value;
+
+      // Create an object to hold the form data
+      var formData = {
+        name:name,
+        email:email ,
+        dob:dob
+      };
+
+      // Make a POST request to the specified URL
+      console.log(JSON.stringify(formData))
+      fetch('http://localhost:8080/api/v1/student', {
+        method: 'POST',
+        headers: {
+          'Accept':'/','Content-Type': 'application/json', 'charset': 'utf-8'
+        },
+        body: JSON.stringify(formData)
+      })
+        .then(function(response) {
+          if (!response.ok) {
+            // If the response indicates an error, display the error message
+            return response.text().then(function(errorMessage) {
+              throw new Error(errorMessage);
+            });
+          }
+        })
+        .catch(function(error) {
+          // Display the error message on the screen
+          var errorMessageElement = document.getElementById('errorMessage');
+          errorMessageElement.textContent = error.message;
+          errorMessageElement.style.display = 'block';
+        });
+    }
+  </script>
+</body>
+</html>
